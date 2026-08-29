@@ -1,0 +1,10 @@
+services:
+  nika-dent-quiz:
+    build:
+      context: .
+    container_name: ${CONTAINER_NAME:-nika-dent-quiz}
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-8080}:80"
+    environment:
+      DOMAIN_NAME: ${DOMAIN_NAME:-localhost}

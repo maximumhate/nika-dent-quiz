@@ -8,3 +8,5 @@ services:
       - "${APP_PORT:-8080}:80"
     environment:
       DOMAIN_NAME: ${DOMAIN_NAME:-localhost}
+      APP_PORT: ${APP_PORT:-8080}
+      CONTAINER_NAME: ${CONTAINER_NAME:-nika-dent-quiz}

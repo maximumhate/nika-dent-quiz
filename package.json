@@ -4,15 +4,20 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "predev": "node scripts/generate-quiz-data.mjs",
     "dev": "vite",
+    "prebuild": "node scripts/generate-quiz-data.mjs",
     "build": "vite build",
     "preview": "vite preview"
+    ,"sheets:create": "node scripts/create-google-sheet.mjs"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "latest",
     "vite": "latest"
   },
   "dependencies": {
+    "express": "latest",
+    "googleapis": "latest",
     "react": "latest",
     "react-dom": "latest"
   }

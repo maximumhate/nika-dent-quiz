@@ -29,3 +29,14 @@ button { cursor: pointer; }
 .lead-form input:focus { border-color: #6cddff; box-shadow: 0 0 16px rgba(74, 207, 249, .12); }
 .lead-form .cyan-button { margin-top: 6px; }
 .form-error { color: #ff9d9d; font: 10px 'IBM Plex Mono', monospace; }
+
+/* Photorealistic dental hero asset */
+.tooth-photo { position: absolute; z-index: 2; width: 310px; height: 390px; left: 50px; top: 44px; object-fit: contain; filter: drop-shadow(0 0 24px rgba(82, 214, 255, .28)); }
+.tooth-art-compact .tooth-photo { width: 300px; height: 380px; left: 54px; top: 49px; }
+
+@media (max-width: 680px) {
+  .lead-form { gap: 10px; }
+  .lead-form input { min-height: 48px; font-size: 16px; }
+  .tooth-photo { width: 250px; height: 315px; left: 80px; top: 66px; }
+  .tooth-art-compact .tooth-photo { width: 245px; height: 310px; left: 83px; top: 69px; }
+}

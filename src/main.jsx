@@ -19,8 +19,7 @@ function ToothArtwork({ compact = false }) {
     <div className={`tooth-art ${compact ? 'tooth-art-compact' : ''}`} aria-hidden="true">
       <div className="scan-ring ring-a" /><div className="scan-ring ring-b" />
       <div className="tooth-glow" />
-      <div className="tooth-body"><span className="tooth-shine" /><span className="tooth-root root-a" /><span className="tooth-root root-b" /></div>
-      <div className="magnifier"><span /></div>
+      <img className="tooth-photo" src="/tooth-hero.png" alt="" />
       <div className="art-code">CARE<br />CONTROL<br />FUTURE</div>
     </div>
   );
@@ -144,7 +143,7 @@ function Quiz({ segment, lead, onFinish, onBack }) {
   const answered = selected !== null;
   const progress = ((currentIndex + (answered ? 1 : 0)) / segment.questions.length) * 100;
 
-  const choose = (option) => { if (!answered) setSelected(option); };
+  const choose = (option) => setSelected(option);
   const next = () => {
     if (!answered) return;
     const nextAnswers = [...answers, selected];
@@ -164,7 +163,7 @@ function Quiz({ segment, lead, onFinish, onBack }) {
           <div className="answer-list" role="radiogroup" aria-label="Варианты ответа">
             {question.options.map((option, index) => { const chosen = selected?.letter === option.letter; return <button key={option.letter} className={`answer-row ${chosen ? 'is-selected' : ''}`} onClick={() => choose(option)} role="radio" aria-checked={chosen}><span className="answer-letter">{letters[index]}</span><span className="answer-copy">{option.text}</span><span className="answer-arrow">{chosen ? '✓' : '↗'}</span></button>; })}
           </div>
-          <div className={`question-note ${answered ? 'is-visible' : ''}`}><span className="note-icon">✦</span><span>{answered ? 'Ответ зафиксирован. Изменить его после перехода нельзя.' : 'Выберите вариант, который ближе к Вашей практике'}</span></div>
+          <div className={`question-note ${answered ? 'is-visible' : ''}`}><span className="note-icon">✦</span><span>{answered ? 'Ответ можно изменить до перехода к следующему вопросу.' : 'Выберите вариант, который ближе к Вашей практике'}</span></div>
           <div className="question-action"><span>{answered ? `${currentIndex + 1} / ${segment.questions.length}` : 'Ваш ответ'}</span><button className="cyan-button" disabled={!answered} onClick={next}>{currentIndex === segment.questions.length - 1 ? 'Получить результат' : 'Следующий вопрос'} <span>↗</span></button></div>
         </div>
         <aside className="question-art"><ToothArtwork compact /><span className="art-counter">0{currentIndex + 1}<em>/ 10</em></span></aside>

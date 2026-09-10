@@ -19,7 +19,7 @@ function ToothArtwork({ compact = false }) {
     <div className={`tooth-art ${compact ? 'tooth-art-compact' : ''}`} aria-hidden="true">
       <div className="scan-ring ring-a" /><div className="scan-ring ring-b" />
       <div className="tooth-glow" />
-      <img className="tooth-photo" src="/tooth-hero.png" alt="" />
+      <img className="tooth-photo" src="/tooth-hero.png?v=2" alt="" />
       <div className="art-code">CARE<br />CONTROL<br />FUTURE</div>
     </div>
   );

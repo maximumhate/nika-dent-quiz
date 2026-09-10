@@ -3,4 +3,5 @@ dist
 .git
 .env
 credentials.json
+Викторина.md
 npm-debug.log

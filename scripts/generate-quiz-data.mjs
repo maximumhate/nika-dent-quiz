@@ -1,6 +1,6 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 
-const source = readFileSync(new URL('../Викторина.md', import.meta.url), 'utf8').replace(/\r/g, '');
+const source = readFileSync(new URL('../quiz-source.md', import.meta.url), 'utf8').replace(/\r/g, '');
 const lines = source.split('\n');
 
 const clean = (value) => value

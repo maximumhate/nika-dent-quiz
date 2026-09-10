@@ -9,7 +9,7 @@ npm install
 npm run dev
 ```
 
-Источник вопросов — `Викторина.md`. Команда `npm run build` автоматически собирает из него все 9 веток по 10 вопросов.
+Источник вопросов — `quiz-source.md` (копия `Викторина.md`). Команда `npm run build` автоматически собирает из него все 9 веток по 10 вопросов.
 
 ## Google Таблица
 
@@ -21,7 +21,7 @@ npm run dev
 npm run sheets:create
 ```
 
-Полученный `GOOGLE_SHEET_ID` передайте API через env. Сервисный ключ и `credentials.json` в репозиторий не входят.
+Передайте ID существующей таблицы через `GOOGLE_SHEET_ID` или `SHEETS_ID` и поделитесь таблицей с email сервисного аккаунта из `credentials.json`. Сервисный ключ и `credentials.json` в репозиторий не входят.
 
 ## Production
 

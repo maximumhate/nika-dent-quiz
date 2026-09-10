@@ -40,3 +40,26 @@ button { cursor: pointer; }
   .tooth-photo { width: 250px; height: 315px; left: 80px; top: 66px; }
   .tooth-art-compact .tooth-photo { width: 245px; height: 310px; left: 83px; top: 69px; }
 }
+
+/* Mobile hero composition */
+@media (max-width: 680px) {
+  .landing-screen { overflow-x: hidden; }
+  .landing-screen .topbar { height: 68px; }
+  .landing-grid { width: 100%; display: flex; flex-direction: column; gap: 0; margin: 0; padding: 24px 19px 0; }
+  .landing-copy { padding: 0; }
+  .landing-copy h1 { margin: 16px 0 14px; font-size: clamp(40px, 11.2vw, 54px); line-height: .94; }
+  .landing-copy .lead { max-width: 370px; margin-bottom: 20px; font-size: 14px; line-height: 1.48; }
+  .landing-copy .cyan-button { width: min(100%, 370px); min-height: 52px; }
+  .landing-facts { width: min(100%, 370px); justify-content: space-between; gap: 12px; margin-top: 28px; }
+  .landing-art { width: 100%; height: 270px; min-height: 270px; margin-top: 7px; overflow: visible; }
+  .landing-art .tooth-art { animation: none; transform: scale(.72); transform-origin: center center; }
+  .landing-art .tooth-photo { mask-image: radial-gradient(ellipse at center, #000 55%, transparent 92%); -webkit-mask-image: radial-gradient(ellipse at center, #000 55%, transparent 92%); }
+  .landing-art .art-label { z-index: 4; font-size: 8px; line-height: 1.5; }
+  .landing-art .label-top { right: 5%; top: 14%; }
+  .landing-art .label-bottom { left: 7%; bottom: 7%; }
+  .landing-screen .site-footer { margin-top: auto; }
+
+  .intro-screen .tooth-art,
+  .result-screen .tooth-art { animation: none; transform: scale(.62); transform-origin: center center; }
+  .intro-art, .result-art { overflow: visible; }
+}

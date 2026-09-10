@@ -83,11 +83,33 @@ function SegmentPicker({ onChoose, onBack }) {
 }
 
 function SegmentIntro({ segment, onStart, onBack }) {
+  const [fullName, setFullName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [formError, setFormError] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
+
+  const submitLead = async (event) => {
+    event.preventDefault();
+    if (fullName.trim().length < 5 || phone.replace(/\D/g, '').length < 10) {
+      setFormError('Проверьте ФИО и номер телефона');
+      return;
+    }
+    setFormError(''); setIsSaving(true);
+    const lead = { leadId: crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`, fullName: fullName.trim(), phone: phone.trim(), segmentId: segment.id, segmentLabel: segment.label };
+    try {
+      const response = await fetch('/api/quiz-leads', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(lead) });
+      if (!response.ok) throw new Error('lead save failed');
+      onStart(lead);
+    } catch {
+      setFormError('Не удалось сохранить данные. Попробуйте ещё раз.');
+    } finally { setIsSaving(false); }
+  };
+
   return (
     <div className="screen inner-screen intro-screen">
       <Topbar onBack={onBack} />
       <main className="intro-layout">
-        <div className="intro-copy"><div className="kicker"><span className="kicker-dot" /> ШАГ 02 / 03</div><span className="intro-index">{segment.label}</span><h1>10 ситуаций<br /><strong>из практики</strong></h1><p>Выберите вариант, который ближе всего к тому, как Вы действительно работаете. Здесь нет оценки — только повод посмотреть на привычные решения свежим взглядом.</p><button className="cyan-button" onClick={onStart}>Начать тест <span>↗</span></button><button className="text-button" onClick={onBack}>← Выбрать другое направление</button></div>
+        <div className="intro-copy"><div className="kicker"><span className="kicker-dot" /> ШАГ 02 / 03</div><span className="intro-index">{segment.label}</span><h1>10 ситуаций<br /><strong>из практики</strong></h1><p>Выберите вариант, который ближе всего к тому, как Вы действительно работаете. Здесь нет оценки — только повод посмотреть на привычные решения свежим взглядом.</p><form className="lead-form" onSubmit={submitLead}><label>Ваше имя<input value={fullName} onChange={(event) => setFullName(event.target.value)} placeholder="Фамилия Имя Отчество" autoComplete="name" /></label><label>Телефон<input value={phone} onChange={(event) => setPhone(event.target.value)} placeholder="+7 (___) ___-__-__" type="tel" autoComplete="tel" /></label>{formError && <div className="form-error">{formError}</div>}<button className="cyan-button" disabled={isSaving} type="submit">{isSaving ? 'Сохраняем данные…' : 'Начать тест'} <span>↗</span></button></form><button className="text-button" onClick={onBack}>← Выбрать другое направление</button></div>
         <div className="intro-art"><ToothArtwork compact /><div className="orbit-word">NEXT<br />LEVEL</div></div>
       </main>
       <Footer compact />
@@ -114,7 +136,7 @@ function countAnswers(answers) {
   return answers.reduce((counts, answer) => { const key = { А: 'A', Б: 'B', В: 'V' }[answer.letter] || answer.letter; counts[key] += 1; return counts; }, { A: 0, B: 0, V: 0 });
 }
 
-function Quiz({ segment, onFinish, onBack }) {
+function Quiz({ segment, lead, onFinish, onBack }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState([]);
   const [selected, setSelected] = useState(null);
@@ -152,7 +174,7 @@ function Quiz({ segment, onFinish, onBack }) {
   );
 }
 
-function Result({ segment, answers, onRestart }) {
+function Result({ segment, lead, answers, onRestart }) {
   const resultData = useMemo(() => calculateResult(segment, answers), [segment, answers]);
   const [saveState, setSaveState] = useState('saving');
   const sent = useRef(false);
@@ -161,7 +183,7 @@ function Result({ segment, answers, onRestart }) {
     document.title = `${resultData.result.label} — NIKA DENT`;
     if (sent.current) return;
     sent.current = true;
-    const payload = { sessionId: crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`, segmentId: segment.id, segmentLabel: segment.label, score: resultData.score, resultKey: resultData.resultKey, resultLabel: resultData.result.label, answers: answers.map((answer, index) => ({ question: index + 1, letter: answer.letter, value: answer.value, text: answer.text })) };
+    const payload = { sessionId: crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`, leadId: lead.leadId, fullName: lead.fullName, phone: lead.phone, segmentId: segment.id, segmentLabel: segment.label, score: resultData.score, resultKey: resultData.resultKey, resultLabel: resultData.result.label, answers: answers.map((answer, index) => ({ question: index + 1, letter: answer.letter, value: answer.value, text: answer.text })) };
     fetch('/api/quiz-results', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).then((response) => { if (!response.ok) throw new Error('save failed'); setSaveState('saved'); }).catch(() => setSaveState('offline'));
   }, [answers, resultData, segment]);
 
@@ -178,11 +200,12 @@ function App() {
   const [screen, setScreen] = useState('landing');
   const [segment, setSegment] = useState(null);
   const [answers, setAnswers] = useState([]);
+  const [lead, setLead] = useState(null);
   const selectSegment = (nextSegment) => { setSegment(nextSegment); setScreen('intro'); window.scrollTo({ top: 0, behavior: 'smooth' }); };
-  const startQuiz = () => { setAnswers([]); setScreen('quiz'); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+  const startQuiz = (nextLead) => { setLead(nextLead); setAnswers([]); setScreen('quiz'); window.scrollTo({ top: 0, behavior: 'smooth' }); };
   const finishQuiz = (nextAnswers) => { setAnswers(nextAnswers); setScreen('result'); window.scrollTo({ top: 0, behavior: 'smooth' }); };
-  const restart = () => { setAnswers([]); setScreen('segments'); };
-  return <>{screen === 'landing' && <Landing onStart={() => setScreen('segments')} />}{screen === 'segments' && <SegmentPicker onChoose={selectSegment} onBack={() => setScreen('landing')} />}{screen === 'intro' && segment && <SegmentIntro segment={segment} onStart={startQuiz} onBack={() => setScreen('segments')} />}{screen === 'quiz' && segment && <Quiz segment={segment} onFinish={finishQuiz} onBack={() => setScreen('intro')} />}{screen === 'result' && segment && <Result segment={segment} answers={answers} onRestart={restart} />}</>;
+  const restart = () => { setAnswers([]); setLead(null); setScreen('segments'); };
+  return <>{screen === 'landing' && <Landing onStart={() => setScreen('segments')} />}{screen === 'segments' && <SegmentPicker onChoose={selectSegment} onBack={() => setScreen('landing')} />}{screen === 'intro' && segment && <SegmentIntro segment={segment} onStart={startQuiz} onBack={() => setScreen('segments')} />}{screen === 'quiz' && segment && lead && <Quiz segment={segment} lead={lead} onFinish={finishQuiz} onBack={() => setScreen('intro')} />}{screen === 'result' && segment && lead && <Result segment={segment} lead={lead} answers={answers} onRestart={restart} />}</>;
 }
 
 createRoot(document.getElementById('root')).render(<StrictMode><App /></StrictMode>);

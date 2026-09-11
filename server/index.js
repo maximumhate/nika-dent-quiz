@@ -67,7 +67,7 @@ function cleanCell(value) {
 
 function validatePayload(payload) {
   if (!payload || typeof payload !== 'object') return 'Некорректные данные';
-  if (!payload.sessionId || !payload.leadId || !payload.fullName || !payload.phone || !payload.segmentId || !payload.segmentLabel || !payload.resultLabel) return 'Не хватает данных прохождения';
+  if (!payload.sessionId || !payload.segmentId || !payload.segmentLabel || !payload.resultLabel) return 'Не хватает данных прохождения';
   if (!Array.isArray(payload.answers) || payload.answers.length !== 10) return 'Нужно сохранить все 10 ответов';
   if (!payload.answers.every((answer, index) => answer?.question === index + 1 && ['А', 'Б', 'В'].includes(answer.letter))) return 'Некорректные ответы';
   if (!Number.isFinite(payload.score) || payload.score < 10 || payload.score > 30) return 'Некорректный результат';

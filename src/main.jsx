@@ -8,8 +8,7 @@ const letters = ['А', 'Б', 'В'];
 function Logo() {
   return (
     <a className="brand" href="#top" aria-label="NIKA DENT — в начало">
-      <span className="brand-mark" aria-hidden="true"><i /><i /><i /><i /><i /><i /></span>
-      <span className="brand-name">NIKA<span>DENT</span><small>учебный центр</small></span>
+      <img className="brand-logo" src="/nika-dent-logo.png" alt="NIKA DENT — учебный центр" />
     </a>
   );
 }
@@ -82,33 +81,11 @@ function SegmentPicker({ onChoose, onBack }) {
 }
 
 function SegmentIntro({ segment, onStart, onBack }) {
-  const [fullName, setFullName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [formError, setFormError] = useState('');
-  const [isSaving, setIsSaving] = useState(false);
-
-  const submitLead = async (event) => {
-    event.preventDefault();
-    if (fullName.trim().length < 5 || phone.replace(/\D/g, '').length < 10) {
-      setFormError('Проверьте ФИО и номер телефона');
-      return;
-    }
-    setFormError(''); setIsSaving(true);
-    const lead = { leadId: crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`, fullName: fullName.trim(), phone: phone.trim(), segmentId: segment.id, segmentLabel: segment.label };
-    try {
-      const response = await fetch('/api/quiz-leads', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(lead) });
-      if (!response.ok) throw new Error('lead save failed');
-      onStart(lead);
-    } catch {
-      setFormError('Не удалось сохранить данные. Попробуйте ещё раз.');
-    } finally { setIsSaving(false); }
-  };
-
   return (
     <div className="screen inner-screen intro-screen">
       <Topbar onBack={onBack} />
       <main className="intro-layout">
-        <div className="intro-copy"><div className="kicker"><span className="kicker-dot" /> ШАГ 02 / 03</div><span className="intro-index">{segment.label}</span><h1>10 ситуаций<br /><strong>из практики</strong></h1><p>Выберите вариант, который ближе всего к тому, как Вы действительно работаете. Здесь нет оценки — только повод посмотреть на привычные решения свежим взглядом.</p><form className="lead-form" onSubmit={submitLead}><label>Ваше имя<input value={fullName} onChange={(event) => setFullName(event.target.value)} placeholder="Фамилия Имя Отчество" autoComplete="name" /></label><label>Телефон<input value={phone} onChange={(event) => setPhone(event.target.value)} placeholder="+7 (___) ___-__-__" type="tel" autoComplete="tel" /></label>{formError && <div className="form-error">{formError}</div>}<button className="cyan-button" disabled={isSaving} type="submit">{isSaving ? 'Сохраняем данные…' : 'Начать тест'}</button></form><button className="text-button" onClick={onBack}>← Выбрать другое направление</button></div>
+        <div className="intro-copy"><div className="kicker"><span className="kicker-dot" /> ШАГ 02 / 03</div><span className="intro-index">{segment.label}</span><h1>10 ситуаций<br /><strong>из практики</strong></h1><p>Выберите вариант, который ближе всего к тому, как Вы действительно работаете. Здесь нет оценки — только повод посмотреть на привычные решения свежим взглядом.</p><button className="cyan-button" onClick={onStart}>Начать тест</button><button className="text-button" onClick={onBack}>← Выбрать другое направление</button></div>
         <div className="intro-art"><ToothArtwork compact /><div className="orbit-word">NEXT<br />LEVEL</div></div>
       </main>
       <Footer compact />
@@ -135,24 +112,22 @@ function countAnswers(answers) {
   return answers.reduce((counts, answer) => { const key = { А: 'A', Б: 'B', В: 'V' }[answer.letter] || answer.letter; counts[key] += 1; return counts; }, { A: 0, B: 0, V: 0 });
 }
 
-function Quiz({ segment, lead, onFinish, onBack }) {
+function Quiz({ segment, onFinish, onBack }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState([]);
-  const [selected, setSelected] = useState(null);
   const question = segment.questions[currentIndex];
-  const answered = selected !== null;
-  const progress = ((currentIndex + (answered ? 1 : 0)) / segment.questions.length) * 100;
+  const hasQuestionImage = segment.id === 'surgeon';
+  const progress = ((currentIndex + 1) / segment.questions.length) * 100;
 
-  const choose = (option) => setSelected(option);
-  const next = () => {
-    if (!answered) return;
-    const nextAnswers = [...answers, selected];
+  const choose = (option) => {
+    const nextAnswers = [...answers, option];
     if (currentIndex === segment.questions.length - 1) { onFinish(nextAnswers); return; }
-    setAnswers(nextAnswers); setSelected(null); setCurrentIndex((value) => value + 1);
+    setAnswers(nextAnswers);
+    setCurrentIndex((value) => value + 1);
   };
 
   return (
-    <div className="screen inner-screen quiz-screen">
+    <div className={`screen inner-screen quiz-screen ${hasQuestionImage ? 'has-question-image' : ''}`} style={hasQuestionImage ? { '--question-image': `url("/quiz/surgery/${currentIndex + 1}.png")` } : undefined}>
       <Topbar step={currentIndex + 1} total={segment.questions.length} onBack={onBack} />
       <div className="question-progress"><span style={{ width: `${progress}%` }} /></div>
       <main className="quiz-layout">
@@ -161,10 +136,9 @@ function Quiz({ segment, lead, onFinish, onBack }) {
           <div className="question-meta"><span>ВОПРОС {currentIndex + 1} ИЗ {segment.questions.length}</span><span className="meta-divider" /><span>{segment.label}</span></div>
           <div className="question-title"><span className="question-topic">{question.title}</span><h1>{question.prompt}</h1><p>Выберите один вариант ответа</p></div>
           <div className="answer-list" role="radiogroup" aria-label="Варианты ответа">
-            {question.options.map((option, index) => { const chosen = selected?.letter === option.letter; return <button key={option.letter} className={`answer-row ${chosen ? 'is-selected' : ''}`} onClick={() => choose(option)} role="radio" aria-checked={chosen}><span className="answer-letter">{letters[index]}</span><span className="answer-copy">{option.text}</span><span className="answer-arrow">{chosen ? '✓' : ''}</span></button>; })}
+            {question.options.map((option, index) => <button key={option.letter} className="answer-row" onClick={() => choose(option)} role="radio" aria-checked="false"><span className="answer-letter">{letters[index]}</span><span className="answer-copy">{option.text}</span><span className="answer-arrow">→</span></button>)}
           </div>
-          <div className={`question-note ${answered ? 'is-visible' : ''}`}><span className="note-icon">✦</span><span>{answered ? 'Ответ можно изменить до перехода к следующему вопросу.' : 'Выберите вариант, который ближе к Вашей практике'}</span></div>
-          <div className="question-action"><span>{answered ? `${currentIndex + 1} / ${segment.questions.length}` : 'Ваш ответ'}</span><button className="cyan-button" disabled={!answered} onClick={next}>{currentIndex === segment.questions.length - 1 ? 'Получить результат' : 'Следующий вопрос'}</button></div>
+          <div className="question-note is-visible"><span className="note-icon">✦</span><span>Выберите вариант, чтобы перейти дальше</span></div>
         </div>
         <aside className="question-art"><ToothArtwork compact /><span className="art-counter">0{currentIndex + 1}<em>/ 10</em></span></aside>
       </main>
@@ -173,7 +147,7 @@ function Quiz({ segment, lead, onFinish, onBack }) {
   );
 }
 
-function Result({ segment, lead, answers, onRestart }) {
+function Result({ segment, answers, onRestart }) {
   const resultData = useMemo(() => calculateResult(segment, answers), [segment, answers]);
   const [saveState, setSaveState] = useState('saving');
   const sent = useRef(false);
@@ -182,12 +156,12 @@ function Result({ segment, lead, answers, onRestart }) {
     document.title = `${resultData.result.label} — NIKA DENT`;
     if (sent.current) return;
     sent.current = true;
-    const payload = { sessionId: crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`, leadId: lead.leadId, fullName: lead.fullName, phone: lead.phone, segmentId: segment.id, segmentLabel: segment.label, score: resultData.score, resultKey: resultData.resultKey, resultLabel: resultData.result.label, answers: answers.map((answer, index) => ({ question: index + 1, letter: answer.letter, value: answer.value, text: answer.text })) };
+    const payload = { sessionId: crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`, segmentId: segment.id, segmentLabel: segment.label, score: resultData.score, resultKey: resultData.resultKey, resultLabel: resultData.result.label, answers: answers.map((answer, index) => ({ question: index + 1, letter: answer.letter, value: answer.value, text: answer.text })) };
     fetch('/api/quiz-results', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).then((response) => { if (!response.ok) throw new Error('save failed'); setSaveState('saved'); }).catch(() => setSaveState('offline'));
   }, [answers, resultData, segment]);
 
   return (
-    <div className="screen result-screen">
+    <div className={`screen result-screen ${segment.id === 'surgeon' ? 'has-result-image' : ''}`} style={segment.id === 'surgeon' ? { '--result-image': 'url("/quiz/surgery/11.jpeg")' } : undefined}>
       <Topbar />
       <main className="result-layout"><div className="result-copy"><div className="kicker"><span className="kicker-dot" /> ШАГ 03 / 03</div><span className="result-segment">{segment.label}</span><div className="result-score"><strong>{resultData.score}</strong><span>/ {segment.questions.length * 3}</span></div><h1>{resultData.result.icon} {resultData.result.label}</h1><p>{resultData.result.description}</p><button className="cyan-button" onClick={onRestart}>Пройти ещё раз</button><div className="save-status"><span className={`save-dot ${saveState}`} />{saveState === 'saving' ? 'Сохраняем Ваш результат' : saveState === 'saved' ? 'Результат сохранён' : 'Результат показан на экране'}</div></div><div className="result-art"><ToothArtwork compact /><div className="result-stamp">NIKA<br />DENT<br /><span>FUTURE<br />STARTS<br />HERE</span></div></div></main>
       <Footer />
@@ -199,12 +173,11 @@ function App() {
   const [screen, setScreen] = useState('landing');
   const [segment, setSegment] = useState(null);
   const [answers, setAnswers] = useState([]);
-  const [lead, setLead] = useState(null);
   const selectSegment = (nextSegment) => { setSegment(nextSegment); setScreen('intro'); window.scrollTo({ top: 0, behavior: 'smooth' }); };
-  const startQuiz = (nextLead) => { setLead(nextLead); setAnswers([]); setScreen('quiz'); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+  const startQuiz = () => { setAnswers([]); setScreen('quiz'); window.scrollTo({ top: 0, behavior: 'smooth' }); };
   const finishQuiz = (nextAnswers) => { setAnswers(nextAnswers); setScreen('result'); window.scrollTo({ top: 0, behavior: 'smooth' }); };
-  const restart = () => { setAnswers([]); setLead(null); setScreen('segments'); };
-  return <>{screen === 'landing' && <Landing onStart={() => setScreen('segments')} />}{screen === 'segments' && <SegmentPicker onChoose={selectSegment} onBack={() => setScreen('landing')} />}{screen === 'intro' && segment && <SegmentIntro segment={segment} onStart={startQuiz} onBack={() => setScreen('segments')} />}{screen === 'quiz' && segment && lead && <Quiz segment={segment} lead={lead} onFinish={finishQuiz} onBack={() => setScreen('intro')} />}{screen === 'result' && segment && lead && <Result segment={segment} lead={lead} answers={answers} onRestart={restart} />}</>;
+  const restart = () => { setAnswers([]); setScreen('segments'); };
+  return <>{screen === 'landing' && <Landing onStart={() => setScreen('segments')} />}{screen === 'segments' && <SegmentPicker onChoose={selectSegment} onBack={() => setScreen('landing')} />}{screen === 'intro' && segment && <SegmentIntro segment={segment} onStart={startQuiz} onBack={() => setScreen('segments')} />}{screen === 'quiz' && segment && <Quiz segment={segment} onFinish={finishQuiz} onBack={() => setScreen('intro')} />}{screen === 'result' && segment && <Result segment={segment} answers={answers} onRestart={restart} />}</>;
 }
 
 createRoot(document.getElementById('root')).render(<StrictMode><App /></StrictMode>);

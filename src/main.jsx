@@ -13,17 +13,6 @@ function Logo() {
   );
 }
 
-function ToothArtwork({ compact = false }) {
-  return (
-    <div className={`tooth-art ${compact ? 'tooth-art-compact' : ''}`} aria-hidden="true">
-      <div className="scan-ring ring-a" /><div className="scan-ring ring-b" />
-      <div className="tooth-glow" />
-      <img className="tooth-photo" src="/tooth-hero.png?v=2" alt="" />
-      <div className="art-code">CARE<br />CONTROL<br />FUTURE</div>
-    </div>
-  );
-}
-
 function Topbar({ step, total, onBack }) {
   return (
     <header className="topbar" id="top">
@@ -54,7 +43,6 @@ function Landing({ onStart }) {
           <button className="cyan-button" onClick={onStart}>Выбрать направление</button>
           <div className="landing-facts"><span><b>10</b> вопросов</span><span><b>≈ 3</b> минуты</span><span><b>3</b> подхода</span></div>
         </div>
-        <div className="landing-art"><ToothArtwork /><div className="art-label label-top">MODERN<br />DENTISTRY</div><div className="art-label label-bottom">SMILE<br />FORWARD</div></div>
       </div>
       <div className="landing-corner">01<span>/ 03</span></div>
       <Footer />
@@ -86,7 +74,6 @@ function SegmentIntro({ segment, onStart, onBack }) {
       <Topbar onBack={onBack} />
       <main className="intro-layout">
         <div className="intro-copy"><div className="kicker"><span className="kicker-dot" /> ШАГ 02 / 03</div><span className="intro-index">{segment.label}</span><h1>10 ситуаций<br /><strong>из практики</strong></h1><p>Выберите вариант, который ближе всего к тому, как Вы действительно работаете. Здесь нет оценки — только повод посмотреть на привычные решения свежим взглядом.</p><button className="cyan-button" onClick={onStart}>Начать тест</button><button className="text-button" onClick={onBack}>← Выбрать другое направление</button></div>
-        <div className="intro-art"><ToothArtwork compact /><div className="orbit-word">NEXT<br />LEVEL</div></div>
       </main>
       <Footer compact />
     </div>
@@ -162,7 +149,7 @@ function Result({ segment, answers, onRestart }) {
   return (
     <div className={`screen result-screen ${segment.id === 'surgeon' ? 'has-result-image' : ''}`} style={segment.id === 'surgeon' ? { '--result-image': 'url("/quiz/surgery/11.jpeg")' } : undefined}>
       <Topbar />
-      <main className="result-layout"><div className="result-copy"><div className="kicker"><span className="kicker-dot" /> ШАГ 03 / 03</div><span className="result-segment">{segment.label}</span><div className="result-score"><strong>{resultData.score}</strong><span>/ {segment.questions.length * 3}</span></div><h1>{resultData.result.icon} {resultData.result.label}</h1><p>{resultData.result.description}</p><button className="cyan-button" onClick={onRestart}>Пройти ещё раз</button><div className="save-status"><span className={`save-dot ${saveState}`} />{saveState === 'saving' ? 'Сохраняем Ваш результат' : saveState === 'saved' ? 'Результат сохранён' : 'Результат показан на экране'}</div></div><div className="result-art"><ToothArtwork compact /><div className="result-stamp">NIKA<br />DENT<br /><span>FUTURE<br />STARTS<br />HERE</span></div></div></main>
+      <main className="result-layout"><div className="result-copy"><div className="kicker"><span className="kicker-dot" /> ШАГ 03 / 03</div><span className="result-segment">{segment.label}</span><div className="result-score"><strong>{resultData.score}</strong><span>/ {segment.questions.length * 3}</span></div><h1>{resultData.result.icon} {resultData.result.label}</h1><p>{resultData.result.description}</p><button className="cyan-button" onClick={onRestart}>Пройти ещё раз</button><div className="save-status"><span className={`save-dot ${saveState}`} />{saveState === 'saving' ? 'Сохраняем Ваш результат' : saveState === 'saved' ? 'Результат сохранён' : 'Результат показан на экране'}</div></div></main>
       <Footer />
     </div>
   );

@@ -98,3 +98,8 @@ button:focus-visible { outline: 2px solid #effaff; outline-offset: 4px; }
   .quiz-screen.has-question-image::after { background-image: linear-gradient(180deg, rgba(3, 25, 45, .2) 0%, rgba(3, 25, 45, .08) 50%, rgba(3, 25, 45, .24) 100%), var(--question-image, none); background-position: center, center; background-size: cover, 100% auto; background-repeat: no-repeat; opacity: .9; }
   .has-question-image .question-column { background: rgba(3, 25, 45, .2); backdrop-filter: blur(1px); }
 }
+
+/* The standalone tooth artwork is no longer part of any screen. */
+.landing-grid { grid-template-columns: minmax(0, 760px); justify-content: center; }
+.landing-copy { padding-left: 0; }
+.intro-layout, .result-layout { grid-template-columns: minmax(0, 760px); justify-content: center; }

@@ -4,6 +4,14 @@ import { quizData } from './quizData';
 import './styles.css';
 
 const letters = ['А', 'Б', 'В'];
+const dentalAssets = {
+  mirror: '/generated-dental/mirror.png',
+  implant: '/generated-dental/implant.png',
+  aligner: '/generated-dental/aligner.png',
+  clamp: '/generated-dental/clamp.png',
+  handpiece: '/generated-dental/handpiece.png',
+  hemostasis: '/generated-dental/hemostasis.png',
+};
 
 function Logo() {
   return (
@@ -13,19 +21,14 @@ function Logo() {
   );
 }
 
-function DentalMotif({ className = '' }) {
+function DentalArtifact({ asset }) {
   return (
-    <div className={`dental-motif ${className}`} aria-hidden="true">
-      <span className="motif-orbit motif-orbit-a" />
-      <span className="motif-orbit motif-orbit-b" />
-      <span className="motif-crosshair" />
-      <span className="motif-core"><i /><i /></span>
-      <span className="motif-clamp"><i /><i /></span>
-      <span className="motif-scan" />
-      <span className="motif-caption">DENTAL / NODE 04</span>
-      <span className="motif-status">HEMOSTASIS <b>READY</b></span>
-    </div>
+    <span className={`dental-artifact artifact-${asset}`}><img src={dentalAssets[asset]} alt="" /></span>
   );
+}
+
+function DentalField({ assets, className = '' }) {
+  return <div className={`dental-field ${className}`} aria-hidden="true">{assets.map((asset, index) => <DentalArtifact key={`${asset}-${index}`} asset={asset} />)}</div>;
 }
 
 function Topbar({ step, total, onBack }) {
@@ -59,7 +62,7 @@ function Landing({ onStart }) {
           <div className="landing-facts"><span><b>10</b> вопросов</span><span><b>≈ 3</b> минуты</span><span><b>3</b> подхода</span></div>
         </div>
       </div>
-      <DentalMotif className="motif-hero" />
+      <DentalField assets={['mirror', 'aligner', 'hemostasis', 'implant']} className="field-hero" />
       <div className="landing-corner">01<span>/ 03</span></div>
       <Footer />
     </div>
@@ -79,7 +82,7 @@ function SegmentPicker({ onChoose, onBack }) {
           </button>)}
         </div>
       </main>
-      <DentalMotif className="motif-segments" />
+      <DentalField assets={['clamp', 'implant', 'hemostasis']} className="field-segments" />
       <Footer compact />
     </div>
   );
@@ -92,7 +95,7 @@ function SegmentIntro({ segment, onStart, onBack }) {
       <main className="intro-layout">
         <div className="intro-copy"><div className="kicker"><span className="kicker-dot" /> ШАГ 02 / 03</div><span className="intro-index">{segment.label}</span><h1>10 ситуаций<br /><strong>из практики</strong></h1><p>Выберите вариант, который ближе всего к тому, как Вы действительно работаете. Здесь нет оценки — только повод посмотреть на привычные решения свежим взглядом.</p><button className="cyan-button" onClick={onStart}>Начать тест</button><button className="text-button" onClick={onBack}>← Выбрать другое направление</button></div>
       </main>
-      <DentalMotif className="motif-intro" />
+      <DentalField assets={['mirror', 'handpiece']} className="field-intro" />
       <Footer compact />
     </div>
   );
@@ -134,14 +137,14 @@ function Quiz({ segment, onFinish, onBack }) {
     <div className="screen inner-screen quiz-screen">
       <Topbar step={currentIndex + 1} total={segment.questions.length} onBack={onBack} />
       <div className="question-progress"><span style={{ width: `${progress}%` }} /></div>
-      <DentalMotif className="motif-quiz" />
+      <DentalField assets={['mirror', 'clamp', 'hemostasis', 'implant']} className="field-quiz" />
       <main className="quiz-layout">
         <aside className="quiz-aside"><span className="vertical-caption">{segment.label}</span><span className="aside-line" /><span className="aside-caption">N / D</span></aside>
-        <div className="question-column">
+        <div className="question-column" key={question.id}>
           <div className="question-meta"><span>ВОПРОС {currentIndex + 1} ИЗ {segment.questions.length}</span><span className="meta-divider" /><span>{segment.label}</span></div>
           <div className="question-title"><span className="question-topic">{question.title}</span><h1>{question.prompt}</h1><p>Выберите один вариант ответа</p></div>
           <div className="answer-list" role="radiogroup" aria-label="Варианты ответа">
-            {question.options.map((option, index) => <button key={option.letter} className="answer-row" onClick={() => choose(option)} role="radio" aria-checked="false"><span className="answer-letter">{letters[index]}</span><span className="answer-copy">{option.text}</span><span className="answer-arrow">→</span></button>)}
+            {question.options.map((option, index) => <button key={option.letter} className="answer-row" style={{ '--answer-delay': `${index * 70}ms` }} onClick={() => choose(option)} role="radio" aria-checked="false"><span className="answer-letter">{letters[index]}</span><span className="answer-copy">{option.text}</span><span className="answer-arrow">→</span></button>)}
           </div>
           <div className="question-note is-visible"><span className="note-icon">✦</span><span>Выберите вариант, чтобы перейти дальше</span></div>
         </div>
@@ -168,7 +171,7 @@ function Result({ segment, answers, onRestart }) {
     <div className="screen result-screen">
       <Topbar />
       <main className="result-layout"><div className="result-copy"><div className="kicker"><span className="kicker-dot" /> ШАГ 03 / 03</div><span className="result-segment">{segment.label}</span><div className="result-score"><strong>{resultData.score}</strong><span>/ {segment.questions.length * 3}</span></div><h1>{resultData.result.icon} {resultData.result.label}</h1><p>{resultData.result.description}</p><button className="cyan-button" onClick={onRestart}>Пройти ещё раз</button><div className="save-status"><span className={`save-dot ${saveState}`} />{saveState === 'saving' ? 'Сохраняем Ваш результат' : saveState === 'saved' ? 'Результат сохранён' : 'Результат показан на экране'}</div></div></main>
-      <DentalMotif className="motif-result" />
+      <DentalField assets={['implant', 'aligner', 'hemostasis']} className="field-result" />
       <Footer />
     </div>
   );

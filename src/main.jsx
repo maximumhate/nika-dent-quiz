@@ -13,6 +13,21 @@ function Logo() {
   );
 }
 
+function DentalMotif({ className = '' }) {
+  return (
+    <div className={`dental-motif ${className}`} aria-hidden="true">
+      <span className="motif-orbit motif-orbit-a" />
+      <span className="motif-orbit motif-orbit-b" />
+      <span className="motif-crosshair" />
+      <span className="motif-core"><i /><i /></span>
+      <span className="motif-clamp"><i /><i /></span>
+      <span className="motif-scan" />
+      <span className="motif-caption">DENTAL / NODE 04</span>
+      <span className="motif-status">HEMOSTASIS <b>READY</b></span>
+    </div>
+  );
+}
+
 function Topbar({ step, total, onBack }) {
   return (
     <header className="topbar" id="top">
@@ -44,6 +59,7 @@ function Landing({ onStart }) {
           <div className="landing-facts"><span><b>10</b> вопросов</span><span><b>≈ 3</b> минуты</span><span><b>3</b> подхода</span></div>
         </div>
       </div>
+      <DentalMotif className="motif-hero" />
       <div className="landing-corner">01<span>/ 03</span></div>
       <Footer />
     </div>
@@ -63,6 +79,7 @@ function SegmentPicker({ onChoose, onBack }) {
           </button>)}
         </div>
       </main>
+      <DentalMotif className="motif-segments" />
       <Footer compact />
     </div>
   );
@@ -75,6 +92,7 @@ function SegmentIntro({ segment, onStart, onBack }) {
       <main className="intro-layout">
         <div className="intro-copy"><div className="kicker"><span className="kicker-dot" /> ШАГ 02 / 03</div><span className="intro-index">{segment.label}</span><h1>10 ситуаций<br /><strong>из практики</strong></h1><p>Выберите вариант, который ближе всего к тому, как Вы действительно работаете. Здесь нет оценки — только повод посмотреть на привычные решения свежим взглядом.</p><button className="cyan-button" onClick={onStart}>Начать тест</button><button className="text-button" onClick={onBack}>← Выбрать другое направление</button></div>
       </main>
+      <DentalMotif className="motif-intro" />
       <Footer compact />
     </div>
   );
@@ -103,7 +121,6 @@ function Quiz({ segment, onFinish, onBack }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState([]);
   const question = segment.questions[currentIndex];
-  const hasQuestionImage = segment.id === 'surgeon';
   const progress = ((currentIndex + 1) / segment.questions.length) * 100;
 
   const choose = (option) => {
@@ -114,9 +131,10 @@ function Quiz({ segment, onFinish, onBack }) {
   };
 
   return (
-    <div className={`screen inner-screen quiz-screen ${hasQuestionImage ? 'has-question-image' : ''}`} style={hasQuestionImage ? { '--question-image': `url("/quiz/surgery/${currentIndex + 1}.png")` } : undefined}>
+    <div className="screen inner-screen quiz-screen">
       <Topbar step={currentIndex + 1} total={segment.questions.length} onBack={onBack} />
       <div className="question-progress"><span style={{ width: `${progress}%` }} /></div>
+      <DentalMotif className="motif-quiz" />
       <main className="quiz-layout">
         <aside className="quiz-aside"><span className="vertical-caption">{segment.label}</span><span className="aside-line" /><span className="aside-caption">N / D</span></aside>
         <div className="question-column">
@@ -147,9 +165,10 @@ function Result({ segment, answers, onRestart }) {
   }, [answers, resultData, segment]);
 
   return (
-    <div className={`screen result-screen ${segment.id === 'surgeon' ? 'has-result-image' : ''}`} style={segment.id === 'surgeon' ? { '--result-image': 'url("/quiz/surgery/11.jpeg")' } : undefined}>
+    <div className="screen result-screen">
       <Topbar />
       <main className="result-layout"><div className="result-copy"><div className="kicker"><span className="kicker-dot" /> ШАГ 03 / 03</div><span className="result-segment">{segment.label}</span><div className="result-score"><strong>{resultData.score}</strong><span>/ {segment.questions.length * 3}</span></div><h1>{resultData.result.icon} {resultData.result.label}</h1><p>{resultData.result.description}</p><button className="cyan-button" onClick={onRestart}>Пройти ещё раз</button><div className="save-status"><span className={`save-dot ${saveState}`} />{saveState === 'saving' ? 'Сохраняем Ваш результат' : saveState === 'saved' ? 'Результат сохранён' : 'Результат показан на экране'}</div></div></main>
+      <DentalMotif className="motif-result" />
       <Footer />
     </div>
   );

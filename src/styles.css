@@ -73,33 +73,70 @@ button:focus-visible { outline: 2px solid #effaff; outline-offset: 4px; }
 /* Use the supplied brand mark in the shared header. */
 .brand-logo { width: min(230px, 23vw); height: 64px; display: block; object-fit: contain; object-position: left center; }
 
-/* Surgery supplies one background image per question and one for the result. */
-.quiz-screen.has-question-image::after,
-.result-screen.has-result-image::after { content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none; background-image: linear-gradient(90deg, rgba(3, 25, 45, .96) 0%, rgba(3, 25, 45, .76) 43%, rgba(3, 25, 45, .37) 100%), var(--question-image, none); background-position: center; background-size: cover; opacity: .92; }
-.result-screen.has-result-image::after { background-image: linear-gradient(90deg, rgba(3, 25, 45, .94) 0%, rgba(3, 25, 45, .62) 48%, rgba(3, 25, 45, .25) 100%), var(--result-image, none); }
-.has-question-image .question-column { padding: clamp(22px, 3vw, 42px); border: 1px solid rgba(125, 222, 255, .26); background: rgba(3, 25, 45, .68); box-shadow: 0 20px 70px rgba(0, 8, 18, .28); backdrop-filter: blur(5px); }
 @media (min-width: 981px) {
   .quiz-layout { grid-template-columns: 66px minmax(520px, 720px); justify-content: center; }
 }
 
 @media (max-width: 680px) {
   .brand-logo { width: 190px; height: 52px; }
-  .quiz-screen.has-question-image::after,
-  .result-screen.has-result-image::after { background-position: 58% center; opacity: .7; }
-  .has-question-image .question-column { padding: 18px 14px 20px; background: rgba(3, 25, 45, .72); }
-}
-
-/* Keep the supplied question artwork visible behind the content. */
-.quiz-screen.has-question-image::after { background-image: linear-gradient(90deg, rgba(3, 25, 45, .66) 0%, rgba(3, 25, 45, .24) 43%, rgba(3, 25, 45, .08) 100%), var(--question-image, none); opacity: .82; }
-.has-question-image .question-column { background: rgba(3, 25, 45, .16); box-shadow: 0 20px 70px rgba(0, 8, 18, .12); backdrop-filter: blur(2px); }
-
-@media (max-width: 680px) {
-  .quiz-screen.has-question-image::before { background-image: var(--question-image, none); background-position: center; background-size: cover; filter: blur(18px); mask-image: none; opacity: .42; transform: scale(1.08); }
-  .quiz-screen.has-question-image::after { background-image: linear-gradient(180deg, rgba(3, 25, 45, .2) 0%, rgba(3, 25, 45, .08) 50%, rgba(3, 25, 45, .24) 100%), var(--question-image, none); background-position: center, center; background-size: cover, 100% auto; background-repeat: no-repeat; opacity: .9; }
-  .has-question-image .question-column { background: rgba(3, 25, 45, .2); backdrop-filter: blur(1px); }
 }
 
 /* The standalone tooth artwork is no longer part of any screen. */
 .landing-grid { grid-template-columns: minmax(0, 760px); justify-content: center; }
 .landing-copy { padding-left: 0; }
 .intro-layout, .result-layout { grid-template-columns: minmax(0, 760px); justify-content: center; }
+
+/* Small code-built dental lab accents. */
+.dental-motif { width: 176px; height: 176px; position: absolute; z-index: 1; pointer-events: none; color: #67dfff; opacity: .7; }
+.motif-orbit { position: absolute; border: 1px solid rgba(103, 223, 255, .25); border-radius: 50%; }
+.motif-orbit-a { width: 132px; height: 70px; left: 21px; top: 48px; transform: rotate(-28deg); }
+.motif-orbit-b { width: 166px; height: 45px; left: 5px; top: 65px; transform: rotate(22deg); border-color: rgba(103, 223, 255, .15); }
+.motif-crosshair { position: absolute; width: 42px; height: 42px; left: 67px; top: 64px; border: 1px solid rgba(103, 223, 255, .52); border-radius: 50%; }
+.motif-crosshair::before, .motif-crosshair::after { content: ''; position: absolute; background: rgba(103, 223, 255, .5); }
+.motif-crosshair::before { width: 58px; height: 1px; left: -9px; top: 20px; }
+.motif-crosshair::after { width: 1px; height: 58px; left: 20px; top: -9px; }
+.motif-core { position: absolute; width: 12px; height: 12px; left: 82px; top: 79px; border: 1px solid #9aeaff; border-radius: 50%; box-shadow: 0 0 18px rgba(76, 217, 255, .7); animation: motif-pulse 3.5s ease-in-out infinite; }
+.motif-core i { position: absolute; width: 3px; height: 3px; border-radius: 50%; background: #8ce8ff; }
+.motif-core i:first-child { left: -17px; top: 3px; }
+.motif-core i:last-child { right: -17px; bottom: 3px; background: #ff6875; box-shadow: 0 0 8px rgba(255, 86, 103, .7); }
+.motif-clamp { position: absolute; width: 66px; height: 15px; right: 4px; top: 31px; border-top: 1px solid rgba(142, 234, 255, .65); transform: rotate(-29deg); }
+.motif-clamp::before, .motif-clamp::after { content: ''; position: absolute; width: 43px; height: 1px; left: 26px; background: rgba(142, 234, 255, .65); transform-origin: left center; }
+.motif-clamp::before { top: 0; transform: rotate(24deg); }
+.motif-clamp::after { top: 0; transform: rotate(-24deg); }
+.motif-clamp i { position: absolute; width: 17px; height: 5px; left: 0; border: 1px solid rgba(142, 234, 255, .65); border-radius: 8px; }
+.motif-clamp i:first-child { top: -6px; transform: rotate(-13deg); }
+.motif-clamp i:last-child { top: 2px; transform: rotate(13deg); }
+.motif-scan { position: absolute; width: 114px; height: 1px; left: 31px; top: 120px; background: linear-gradient(90deg, transparent, #69dfff, transparent); animation: motif-sweep 3s ease-in-out infinite; }
+.motif-caption, .motif-status { position: absolute; font: 7px 'IBM Plex Mono', monospace; letter-spacing: .15em; white-space: nowrap; }
+.motif-caption { left: 3px; bottom: 13px; color: #6b9caf; }
+.motif-status { right: 0; bottom: -1px; color: #6b9caf; }
+.motif-status b { color: #ff6875; font-weight: 400; }
+.motif-hero { right: clamp(4%, 8vw, 11%); top: 32%; transform: scale(1.05); }
+.motif-segments { right: 7%; bottom: 17%; }
+.motif-intro { right: 9%; bottom: 20%; }
+.motif-quiz { right: 5%; bottom: 19%; opacity: .48; }
+.motif-result { right: 8%; top: 30%; }
+@keyframes motif-pulse { 0%, 100% { transform: scale(.85); opacity: .65; } 50% { transform: scale(1.15); opacity: 1; } }
+@keyframes motif-sweep { 0%, 100% { transform: scaleX(.35); opacity: .25; } 50% { transform: scaleX(1); opacity: 1; } }
+
+@media (max-width: 680px) {
+  .dental-motif { width: 128px; height: 128px; opacity: .55; }
+  .motif-orbit-a { width: 96px; height: 51px; left: 16px; top: 35px; }
+  .motif-orbit-b { width: 121px; height: 33px; left: 3px; top: 47px; }
+  .motif-crosshair { width: 31px; height: 31px; left: 49px; top: 46px; }
+  .motif-crosshair::before { width: 44px; left: -7px; top: 15px; }
+  .motif-crosshair::after { height: 44px; left: 15px; top: -7px; }
+  .motif-core { left: 60px; top: 57px; transform: scale(.8); }
+  .motif-clamp { transform: scale(.72) rotate(-29deg); transform-origin: right top; right: 0; top: 24px; }
+  .motif-scan { width: 83px; left: 22px; top: 87px; }
+  .motif-caption, .motif-status { font-size: 6px; }
+  .motif-hero { right: -3%; top: auto; bottom: 15%; transform: scale(.9); }
+  .motif-segments { right: -4%; bottom: 15%; transform: scale(.82); }
+  .motif-intro { right: -4%; bottom: 12%; transform: scale(.82); }
+  .motif-quiz { right: -3%; bottom: 12%; transform: scale(.8); }
+  .motif-result { right: -4%; top: auto; bottom: 18%; transform: scale(.82); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motif-core, .motif-scan { animation: none; }
+}

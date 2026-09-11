@@ -140,7 +140,6 @@ function Quiz({ segment, onFinish, onBack }) {
           </div>
           <div className="question-note is-visible"><span className="note-icon">✦</span><span>Выберите вариант, чтобы перейти дальше</span></div>
         </div>
-        <aside className="question-art"><ToothArtwork compact /><span className="art-counter">0{currentIndex + 1}<em>/ 10</em></span></aside>
       </main>
       <Footer compact />
     </div>

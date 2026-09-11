@@ -146,7 +146,7 @@ function Quiz({ segment, onFinish, onBack }) {
           <div className="answer-list" role="radiogroup" aria-label="Варианты ответа">
             {question.options.map((option, index) => <button key={option.letter} className="answer-row" style={{ '--answer-delay': `${index * 70}ms` }} onClick={() => choose(option)} role="radio" aria-checked="false"><span className="answer-letter">{letters[index]}</span><span className="answer-copy">{option.text}</span><span className="answer-arrow">→</span></button>)}
           </div>
-          <div className="question-note is-visible"><span className="note-icon">✦</span><span>Выберите вариант, чтобы перейти дальше</span></div>
+          <div className="question-note is-visible"><span>Выберите вариант, чтобы перейти дальше</span></div>
         </div>
       </main>
       <Footer compact />
@@ -170,7 +170,7 @@ function Result({ segment, answers, onRestart }) {
   return (
     <div className="screen result-screen">
       <Topbar />
-      <main className="result-layout"><div className="result-copy"><div className="kicker"><span className="kicker-dot" /> ШАГ 03 / 03</div><span className="result-segment">{segment.label}</span><div className="result-score"><strong>{resultData.score}</strong><span>/ {segment.questions.length * 3}</span></div><h1>{resultData.result.icon} {resultData.result.label}</h1><p>{resultData.result.description}</p><button className="cyan-button" onClick={onRestart}>Пройти ещё раз</button><div className="save-status"><span className={`save-dot ${saveState}`} />{saveState === 'saving' ? 'Сохраняем Ваш результат' : saveState === 'saved' ? 'Результат сохранён' : 'Результат показан на экране'}</div></div></main>
+      <main className="result-layout"><div className="result-copy"><div className="kicker"><span className="kicker-dot" /> ШАГ 03 / 03</div><span className="result-segment">{segment.label}</span><div className="result-score"><strong>{resultData.score}</strong><span>/ {segment.questions.length * 3}</span></div><h1>{resultData.result.label}</h1><p>{resultData.result.description}</p><button className="cyan-button" onClick={onRestart}>Пройти ещё раз</button><div className="save-status"><span className={`save-dot ${saveState}`} />{saveState === 'saving' ? 'Сохраняем Ваш результат' : saveState === 'saved' ? 'Результат сохранён' : 'Результат показан на экране'}</div></div></main>
       <DentalField assets={['implant', 'aligner', 'hemostasis']} className="field-result" />
       <Footer />
     </div>

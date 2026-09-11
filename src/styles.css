@@ -170,7 +170,7 @@ button:focus-visible { outline: 2px solid #effaff; outline-offset: 4px; }
 
 .question-progress { height: 2px; position: relative; z-index: 3; flex-shrink: 0; background: rgba(202, 224, 242, .12); }
 .question-progress span { display: block; height: 100%; background: #b9d9f5; box-shadow: 0 0 13px rgba(185, 217, 245, .55); transition: width .4s ease; }
-.quiz-layout { width: min(1150px, calc(100% - 48px)); flex: 1; position: relative; z-index: 2; display: grid; grid-template-columns: 52px minmax(0, 760px); align-items: center; justify-content: center; gap: clamp(28px, 6vw, 74px); padding: 45px 0 48px; }
+.quiz-layout { width: min(1150px, calc(100% - 48px)); flex: 1; position: relative; z-index: 2; display: grid; grid-template-columns: 52px minmax(0, 760px); align-items: center; justify-content: center; gap: clamp(28px, 6vw, 74px); margin: auto; padding: 45px 0 48px; }
 .quiz-aside { height: 80%; display: flex; align-items: center; flex-direction: column; justify-content: space-between; border-right: 1px solid var(--hairline); }
 .quiz-aside .vertical-caption { max-height: 150px; }
 .aside-line { width: 1px; flex: 1; margin: 22px 0; background: linear-gradient(to bottom, rgba(168, 204, 239, .42), transparent); }
@@ -190,7 +190,6 @@ button:focus-visible { outline: 2px solid #effaff; outline-offset: 4px; }
 .answer-arrow { color: #abc7df; font-size: 20px; text-align: right; transition: transform .25s ease; }
 .answer-row:hover .answer-arrow { transform: translateX(4px); }
 .question-note { display: flex; align-items: center; gap: 10px; margin-top: 19px; padding-top: 15px; border-top: 1px solid var(--hairline); color: #778894; font: 10px 'IBM Plex Mono', monospace; }
-.note-icon { color: var(--blood); }
 
 .result-copy h1 { margin: 21px 0 18px; color: #f4f7f8; font-size: clamp(38px, 5vw, 68px); font-weight: 500; letter-spacing: -.065em; line-height: 1; }
 .result-score { display: flex; align-items: baseline; gap: 9px; margin-top: 23px; }

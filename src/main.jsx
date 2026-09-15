@@ -106,13 +106,14 @@ function calculateResult(segment, answers) {
   if (segment.scoring === 'score') {
     const score = values.reduce((sum, value) => sum + value, 0);
     const resultKey = score <= 16 ? 'classic' : score <= 24 ? 'transition' : 'future';
-    return { score, resultKey, result: quizData.results.score[resultKey], counts: countAnswers(answers) };
+    const resultSet = segment.results || quizData.results.score;
+    return { score, resultKey, result: resultSet[resultKey], counts: countAnswers(answers) };
   }
   const counts = countAnswers(answers);
   const max = Math.max(counts.A, counts.B, counts.V);
   const leaders = Object.entries(counts).filter(([, count]) => count === max);
   const resultKey = leaders.length === 1 ? leaders[0][0] : 'tie';
-  const resultSet = segment.id === 'manager' ? quizData.results.manager : quizData.results.majority;
+  const resultSet = segment.results || (segment.id === 'manager' ? quizData.results.manager : quizData.results.majority);
   return { score: values.reduce((sum, value) => sum + value, 0), resultKey, result: resultSet[resultKey], counts };
 }
 
@@ -167,10 +168,12 @@ function Result({ segment, answers, onRestart }) {
     fetch('/api/quiz-results', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).then((response) => { if (!response.ok) throw new Error('save failed'); setSaveState('saved'); }).catch(() => setSaveState('offline'));
   }, [answers, resultData, segment]);
 
+  const description = Array.isArray(resultData.result.description) ? resultData.result.description : [resultData.result.description];
+
   return (
     <div className="screen result-screen">
       <Topbar />
-      <main className="result-layout"><div className="result-copy"><div className="kicker"><span className="kicker-dot" /> ШАГ 03 / 03</div><span className="result-segment">{segment.label}</span><div className="result-score"><strong>{resultData.score}</strong><span>/ {segment.questions.length * 3}</span></div><h1>{resultData.result.label}</h1><p>{resultData.result.description}</p><button className="cyan-button" onClick={onRestart}>Пройти ещё раз</button><div className="save-status"><span className={`save-dot ${saveState}`} />{saveState === 'saving' ? 'Сохраняем Ваш результат' : saveState === 'saved' ? 'Результат сохранён' : 'Результат показан на экране'}</div></div></main>
+      <main className="result-layout"><div className="result-copy"><div className="kicker"><span className="kicker-dot" /> ШАГ 03 / 03</div><span className="result-segment">{segment.label}</span><div className="result-score"><strong>{resultData.score}</strong><span>/ {segment.questions.length * 3}</span></div><h1>{resultData.result.label}</h1><div className="result-description">{description.map((paragraph, index) => <p key={`${resultData.resultKey}-${index}`}>{paragraph}</p>)}</div><button className="cyan-button" onClick={onRestart}>Пройти ещё раз</button><div className="save-status"><span className={`save-dot ${saveState}`} />{saveState === 'saving' ? 'Сохраняем Ваш результат' : saveState === 'saved' ? 'Результат сохранён' : 'Результат показан на экране'}</div></div></main>
       <DentalField assets={['implant', 'aligner', 'hemostasis']} className="field-result" />
       <Footer />
     </div>

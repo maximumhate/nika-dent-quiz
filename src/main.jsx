@@ -21,14 +21,27 @@ function Logo() {
   );
 }
 
-function DentalArtifact({ asset }) {
+function DentalArtifact({ asset, style }) {
   return (
-    <span className={`dental-artifact artifact-${asset}`}><img src={dentalAssets[asset]} alt="" /></span>
+    <span className={`dental-artifact artifact-${asset}`} style={style}><img src={dentalAssets[asset]} alt="" /></span>
   );
 }
 
 function DentalField({ assets, className = '' }) {
-  return <div className={`dental-field ${className}`} aria-hidden="true">{assets.map((asset, index) => <DentalArtifact key={`${asset}-${index}`} asset={asset} />)}</div>;
+  const placements = useMemo(() => Array.from({ length: 3 }, () => assets).flat().map((asset, index) => ({
+    asset,
+    index,
+    style: {
+      '--artifact-left': `${4 + Math.random() * 88}%`,
+      '--artifact-top': `${8 + Math.random() * 80}%`,
+      '--artifact-size': `${32 + Math.random() * 132}px`,
+      '--artifact-rotate': `${-24 + Math.random() * 48}deg`,
+      '--artifact-delay': `${-Math.random() * 8}s`,
+      '--artifact-opacity': `${0.42 + Math.random() * 0.28}`,
+    },
+  })), [assets.join('|')]);
+
+  return <div className={`dental-field ${className}`} aria-hidden="true">{placements.map(({ asset, index, style }) => <DentalArtifact key={`${asset}-${index}`} asset={asset} style={style} />)}</div>;
 }
 
 function Topbar({ step, total, onBack }) {
@@ -173,7 +186,7 @@ function Result({ segment, answers, onRestart }) {
   return (
     <div className="screen result-screen">
       <Topbar />
-      <main className="result-layout"><div className="result-copy"><div className="kicker"><span className="kicker-dot" /> ШАГ 03 / 03</div><span className="result-segment">{segment.label}</span><div className="result-score"><strong>{resultData.score}</strong><span>/ {segment.questions.length * 3}</span></div><h1>{resultData.result.label}</h1><div className="result-description">{description.map((paragraph, index) => <p key={`${resultData.resultKey}-${index}`}>{paragraph}</p>)}</div><button className="cyan-button" onClick={onRestart}>Пройти ещё раз</button><div className="save-status"><span className={`save-dot ${saveState}`} />{saveState === 'saving' ? 'Сохраняем Ваш результат' : saveState === 'saved' ? 'Результат сохранён' : 'Результат показан на экране'}</div></div></main>
+       <main className="result-layout"><div className="result-copy"><div className="kicker"><span className="kicker-dot" /> ШАГ 03 / 03</div><span className="result-segment">{segment.label}</span><div className="result-score"><strong>{resultData.score}</strong><span>/ {segment.questions.length * 3}</span></div><h1>{resultData.result.label}</h1><div className="result-description">{description.map((paragraph, index) => <p key={`${resultData.resultKey}-${index}`}>{paragraph}</p>)}</div><div className="result-offer"><a className="cyan-button result-offer-button" href="https://t.me/edu_nikadent_bot?start=dental_expo_quiz" target="_blank" rel="noreferrer">Получить капсулу стоматолога будущего <span aria-hidden="true">↗</span></a><p>Заверши викторину и забронируй свой подарок от учебного центра Никадент</p></div><button className="text-button result-restart" onClick={onRestart}>Пройти ещё раз</button><div className="save-status"><span className={`save-dot ${saveState}`} />{saveState === 'saving' ? 'Сохраняем Ваш результат' : saveState === 'saved' ? 'Результат сохранён' : 'Результат показан на экране'}</div></div></main>
       <DentalField assets={['implant', 'aligner', 'hemostasis']} className="field-result" />
       <Footer />
     </div>

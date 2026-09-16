@@ -196,6 +196,12 @@ button:focus-visible { outline: 2px solid #effaff; outline-offset: 4px; }
 .result-score strong { color: #f4f7f8; font-size: clamp(72px, 9vw, 120px); font-weight: 500; letter-spacing: -.09em; line-height: .8; }
 .result-score span { color: #8495a3; font: 12px 'IBM Plex Mono', monospace; }
 .result-copy p { color: #97a7b4; font-size: 16px; line-height: 1.6; }
+.result-offer { max-width: 560px; margin-top: 35px; }
+.result-offer-button { width: min(100%, 390px); gap: 16px; text-decoration: none; }
+.result-offer-button span { color: #688096; font-size: 18px; transition: transform .25s ease, color .25s ease; }
+.result-offer-button:hover span { color: #111820; transform: translate(2px, -2px); }
+.result-offer p { margin: 12px 0 0; color: #91a4b2; font: 10px 'IBM Plex Mono', monospace; letter-spacing: .04em; line-height: 1.55; }
+.result-restart { margin-top: 23px; }
 .save-status { display: flex; align-items: center; gap: 9px; margin-top: 28px; color: #778894; font: 10px 'IBM Plex Mono', monospace; }
 .save-dot { width: 6px; height: 6px; border-radius: 50%; background: #9baab4; }
 .save-dot.saving { background: #e0be73; box-shadow: 0 0 9px rgba(224, 190, 115, .65); animation: status-pulse 1.2s ease-in-out infinite; }
@@ -203,29 +209,13 @@ button:focus-visible { outline: 2px solid #effaff; outline-offset: 4px; }
 
 /* These are the only decorative dental forms: generated raster cutouts. */
 .dental-field { position: absolute; inset: 0; z-index: 1; overflow: hidden; pointer-events: none; }
-.dental-artifact { position: absolute; display: block; opacity: 0; filter: drop-shadow(0 18px 24px rgba(0, 0, 0, .28)); animation: artifact-float 8s ease-in-out var(--artifact-delay, 0s) infinite; }
+.dental-artifact { position: absolute; top: var(--artifact-top); left: var(--artifact-left); width: min(var(--artifact-size), 18vw); display: block; opacity: 0; filter: drop-shadow(0 18px 24px rgba(0, 0, 0, .28)); animation: artifact-float 8s ease-in-out var(--artifact-delay, 0s) infinite; will-change: transform, opacity; }
 .dental-artifact img { width: 100%; height: auto; display: block; }
 .artifact-hemostasis { filter: drop-shadow(0 0 14px rgba(215, 67, 78, .5)); }
-.field-hero .dental-artifact:nth-child(1) { width: 128px; top: 19%; right: 8%; --artifact-delay: -.8s; --artifact-rotate: 12deg; }
-.field-hero .dental-artifact:nth-child(2) { width: 186px; right: 17%; bottom: 13%; --artifact-delay: -2.5s; --artifact-rotate: -8deg; }
-.field-hero .dental-artifact:nth-child(3) { width: 24px; left: 8%; top: 24%; --artifact-delay: -1.7s; }
-.field-hero .dental-artifact:nth-child(4) { width: 76px; left: 11%; bottom: 19%; --artifact-delay: -4s; --artifact-rotate: -18deg; }
-.field-segments .dental-artifact:nth-child(1) { width: 136px; top: 16%; right: 6%; --artifact-delay: -1s; --artifact-rotate: 8deg; }
-.field-segments .dental-artifact:nth-child(2) { width: 68px; bottom: 15%; left: 42%; --artifact-delay: -3.3s; --artifact-rotate: -14deg; }
-.field-segments .dental-artifact:nth-child(3) { width: 22px; top: 31%; left: 8%; --artifact-delay: -2s; }
-.field-intro .dental-artifact:nth-child(1) { width: 92px; top: 18%; right: 11%; --artifact-delay: -1.5s; --artifact-rotate: 15deg; }
-.field-intro .dental-artifact:nth-child(2) { width: 112px; right: 24%; bottom: 17%; --artifact-delay: -3.2s; --artifact-rotate: -12deg; }
-.field-quiz .dental-artifact:nth-child(1) { width: 68px; top: 17%; left: 9%; --artifact-delay: -1.2s; --artifact-rotate: -18deg; }
-.field-quiz .dental-artifact:nth-child(2) { width: 112px; top: 25%; right: 5%; --artifact-delay: -2.8s; --artifact-rotate: 12deg; }
-.field-quiz .dental-artifact:nth-child(3) { width: 20px; bottom: 18%; left: 16%; --artifact-delay: -3.8s; }
-.field-quiz .dental-artifact:nth-child(4) { width: 54px; bottom: 14%; right: 8%; --artifact-delay: -5s; --artifact-rotate: 19deg; }
-.field-result .dental-artifact:nth-child(1) { width: 82px; top: 19%; right: 10%; --artifact-delay: -1.1s; --artifact-rotate: 12deg; }
-.field-result .dental-artifact:nth-child(2) { width: 136px; right: 23%; bottom: 15%; --artifact-delay: -3.5s; --artifact-rotate: -8deg; }
-.field-result .dental-artifact:nth-child(3) { width: 26px; top: 33%; left: 12%; --artifact-delay: -2.2s; }
 
 @keyframes content-in { from { opacity: 0; transform: translateY(18px); filter: blur(8px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
 @keyframes answer-in { from { opacity: 0; transform: translateX(-16px); } to { opacity: 1; transform: translateX(0); } }
-@keyframes artifact-float { 0% { opacity: 0; transform: translate3d(0, 16px, 0) scale(.88) rotate(var(--artifact-rotate, 0deg)); } 16%, 76% { opacity: .72; } 50% { transform: translate3d(0, -12px, 0) scale(1) rotate(var(--artifact-rotate, 0deg)); } 100% { opacity: 0; transform: translate3d(0, 7px, 0) scale(.95) rotate(var(--artifact-rotate, 0deg)); } }
+@keyframes artifact-float { 0% { opacity: 0; transform: translate3d(0, 16px, 0) scale(.88) rotate(var(--artifact-rotate, 0deg)); } 16%, 76% { opacity: var(--artifact-opacity, .72); } 50% { transform: translate3d(0, -12px, 0) scale(1) rotate(var(--artifact-rotate, 0deg)); } 100% { opacity: 0; transform: translate3d(0, 7px, 0) scale(.95) rotate(var(--artifact-rotate, 0deg)); } }
 @keyframes status-pulse { 0%, 100% { opacity: .45; } 50% { opacity: 1; } }
 
 @media (max-width: 980px) {
@@ -274,22 +264,7 @@ button:focus-visible { outline: 2px solid #effaff; outline-offset: 4px; }
   .answer-copy { font-size: 14px; line-height: 1.45; }
   .question-note { margin-top: 16px; font-size: 9px; line-height: 1.45; }
   .dental-field { opacity: .8; }
-  .field-hero .dental-artifact:nth-child(1) { width: 68px; top: 18%; right: 5%; }
-  .field-hero .dental-artifact:nth-child(2) { width: 94px; right: 9%; bottom: 14%; }
-  .field-hero .dental-artifact:nth-child(3) { width: 18px; left: 8%; top: 30%; }
-  .field-hero .dental-artifact:nth-child(4) { width: 48px; left: 7%; bottom: 21%; }
-  .field-segments .dental-artifact:nth-child(1) { width: 78px; top: 19%; right: 1%; }
-  .field-segments .dental-artifact:nth-child(2) { width: 48px; bottom: 18%; left: 4%; }
-  .field-segments .dental-artifact:nth-child(3) { width: 16px; top: 33%; left: 4%; }
-  .field-intro .dental-artifact:nth-child(1) { width: 58px; top: 18%; right: 4%; }
-  .field-intro .dental-artifact:nth-child(2) { width: 68px; right: 5%; bottom: 17%; }
-  .field-quiz .dental-artifact:nth-child(1) { width: 45px; top: 14%; left: 1%; }
-  .field-quiz .dental-artifact:nth-child(2) { width: 67px; top: 24%; right: 1%; }
-  .field-quiz .dental-artifact:nth-child(3) { width: 16px; bottom: 16%; left: 5%; }
-  .field-quiz .dental-artifact:nth-child(4) { width: 38px; bottom: 13%; right: 3%; }
-  .field-result .dental-artifact:nth-child(1) { width: 56px; top: 18%; right: 3%; }
-  .field-result .dental-artifact:nth-child(2) { width: 78px; right: 7%; bottom: 15%; }
-  .field-result .dental-artifact:nth-child(3) { width: 18px; top: 31%; left: 5%; }
+  .dental-artifact { width: min(var(--artifact-size), 24vw); }
 }
 
 @media (prefers-reduced-motion: reduce) {

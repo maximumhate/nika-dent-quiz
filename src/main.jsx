@@ -104,18 +104,19 @@ function SegmentPicker({ onChoose, onBack }) {
 function SegmentIntro({ segment, onStart, onBack }) {
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
   const [formError, setFormError] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
   const submitLead = async (event) => {
     event.preventDefault();
-    if (fullName.trim().length < 5 || phone.replace(/\D/g, '').length < 10) {
-      setFormError('Проверьте ФИО и номер телефона');
+    if (fullName.trim().length < 5 || phone.replace(/\D/g, '').length < 10 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setFormError('Проверьте ФИО, номер телефона и email');
       return;
     }
     setFormError('');
     setIsSaving(true);
-    const lead = { leadId: crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`, fullName: fullName.trim(), phone: phone.trim(), segmentId: segment.id, segmentLabel: segment.label };
+    const lead = { leadId: crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`, fullName: fullName.trim(), phone: phone.trim(), email: email.trim(), segmentId: segment.id, segmentLabel: segment.label };
     try {
       const response = await fetch('/api/quiz-leads', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(lead) });
       if (!response.ok) throw new Error('lead save failed');
@@ -131,7 +132,7 @@ function SegmentIntro({ segment, onStart, onBack }) {
     <div className="screen inner-screen intro-screen">
       <Topbar onBack={onBack} />
       <main className="intro-layout">
-        <div className="intro-copy"><div className="kicker"><span className="kicker-dot" /> ШАГ 02 / 03</div><span className="intro-index">{segment.label}</span><h1>10 ситуаций<br /><strong>из практики</strong></h1><p>Выберите вариант, который ближе всего к тому, как Вы действительно работаете. Здесь нет оценки — только повод посмотреть на привычные решения свежим взглядом.</p><form className="lead-form" onSubmit={submitLead}><label>Ваше имя<input value={fullName} onChange={(event) => setFullName(event.target.value)} placeholder="Фамилия Имя Отчество" autoComplete="name" /></label><label>Телефон<input value={phone} onChange={(event) => setPhone(event.target.value)} placeholder="+7 (___) ___-__-__" type="tel" autoComplete="tel" /></label>{formError && <div className="form-error" role="alert">{formError}</div>}<button className="cyan-button" disabled={isSaving} type="submit">{isSaving ? 'Сохраняем данные...' : 'Начать тест'}</button></form><button className="text-button" onClick={onBack}>← Выбрать другое направление</button></div>
+        <div className="intro-copy"><div className="kicker"><span className="kicker-dot" /> ШАГ 02 / 03</div><span className="intro-index">{segment.label}</span><h1>10 ситуаций<br /><strong>из практики</strong></h1><p>Выберите вариант, который ближе всего к тому, как Вы действительно работаете. Здесь нет оценки — только повод посмотреть на привычные решения свежим взглядом.</p><form className="lead-form" onSubmit={submitLead}><label>Ваше имя<input value={fullName} onChange={(event) => setFullName(event.target.value)} placeholder="Фамилия Имя Отчество" autoComplete="name" /></label><label>Телефон<input value={phone} onChange={(event) => setPhone(event.target.value)} placeholder="+7 (___) ___-__-__" type="tel" autoComplete="tel" /></label><label>Электронная почта<input value={email} onChange={(event) => setEmail(event.target.value)} placeholder="name@example.com" type="email" autoComplete="email" /></label>{formError && <div className="form-error" role="alert">{formError}</div>}<button className="cyan-button" disabled={isSaving} type="submit">{isSaving ? 'Сохраняем данные...' : 'Начать тест'}</button></form><button className="text-button" onClick={onBack}>← Выбрать другое направление</button></div>
       </main>
       <DentalField assets={['mirror', 'handpiece']} className="field-intro" />
       <Footer compact />
@@ -202,7 +203,7 @@ function Result({ segment, lead, answers, onRestart }) {
     document.title = `${resultData.result.label} — NIKA DENT`;
     if (sent.current) return;
     sent.current = true;
-    const payload = { sessionId: crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`, leadId: lead.leadId, fullName: lead.fullName, phone: lead.phone, segmentId: segment.id, segmentLabel: segment.label, score: resultData.score, resultKey: resultData.resultKey, resultLabel: resultData.result.label, answers: answers.map((answer, index) => ({ question: index + 1, letter: answer.letter, value: answer.value, text: answer.text })) };
+    const payload = { sessionId: crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`, leadId: lead.leadId, fullName: lead.fullName, phone: lead.phone, email: lead.email, segmentId: segment.id, segmentLabel: segment.label, score: resultData.score, resultKey: resultData.resultKey, resultLabel: resultData.result.label, answers: answers.map((answer, index) => ({ question: index + 1, letter: answer.letter, value: answer.value, text: answer.text })) };
     fetch('/api/quiz-results', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).then((response) => { if (!response.ok) throw new Error('save failed'); setSaveState('saved'); }).catch(() => setSaveState('offline'));
   }, [answers, lead, resultData, segment]);
 
